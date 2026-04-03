@@ -5,7 +5,7 @@ import { SystemModePanel, RiskScorePanel, PortfolioPanel } from './components/Pa
 import { TradeForm, DecisionLedger } from './components/TradeAndLedger';
 import { RiskSignals, EmergencyContacts, FinancialWill, EditWillModal, SettingsModal } from './components/Sections';
 import ToastContainer, { useToasts } from './components/Toasts';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 
 // ─── Helpers ─────────────────────────────────────────
 function timeStr() { return new Date().toLocaleTimeString(); }
@@ -350,56 +350,81 @@ function Dashboard({ user, setUser }) {
 
         {/* Page Content */}
         <div className="page-content">
-          {/* Stats Row */}
-          <div className="stats-row">
-            <div className="stat-card">
-              <div className="stat-card-header">
-                <span className="stat-card-title">Portfolio Value</span>
-                <span className="stat-card-icon">💼</span>
+          {activeNav === 'dashboard' && (
+            <>
+              {/* Stats Row */}
+              <div className="stats-row">
+                <div className="stat-card">
+                  <div className="stat-card-header">
+                    <span className="stat-card-title">Portfolio Value</span>
+                    <span className="stat-card-icon">💼</span>
+                  </div>
+                  <div className="stat-card-value">${portfolio.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                  <div className="stat-card-sub"><span style={{ color: 'var(--accent-green)' }}>↑</span> Last updated: just now</div>
+                </div>
+                <div className="stat-card green">
+                  <div className="stat-card-header">
+                    <span className="stat-card-title">Today's P&L</span>
+                    <span className="stat-card-icon">📈</span>
+                  </div>
+                  <div className="stat-card-value" style={{ color: 'var(--accent-green)' }}>+${Math.abs(portfolio.totalValue - 100000).toFixed(2)}</div>
+                  <div className="stat-card-sub">{((portfolio.totalValue - 100000) / 1000).toFixed(2)}%</div>
+                </div>
+                <div className={`stat-card ${risk.total < 0.4 ? '' : risk.total < 0.7 ? 'amber' : 'red'}`}>
+                  <div className="stat-card-header">
+                    <span className="stat-card-title">Risk Score</span>
+                    <span className="stat-card-icon">🎯</span>
+                  </div>
+                  <div className="stat-card-value text-mono" style={{ color: risk.total < 0.4 ? 'var(--accent-green)' : risk.total < 0.7 ? 'var(--accent-amber)' : 'var(--accent-red)' }}>
+                    {(risk.total * 100).toFixed(0)}<span style={{ fontSize: '0.9rem' }}>/100</span>
+                  </div>
+                  <div className="stat-card-sub">GUARD LEVEL: {risk.total < 0.4 ? 'OPTIMAL' : risk.total < 0.7 ? 'ELEVATED' : 'CRITICAL'}</div>
+                </div>
               </div>
-              <div className="stat-card-value">${portfolio.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-              <div className="stat-card-sub"><span style={{ color: 'var(--accent-green)' }}>↑</span> Last updated: just now</div>
+
+              {/* Main Panels */}
+              <div className="panels-grid">
+                <SystemModePanel mode={mode} secondsInactive={secondsInactive} confidence={confidence} demoRunning={demoRunning} />
+                <RiskScorePanel risk={risk} />
+              </div>
+            </>
+          )}
+
+          {activeNav === 'trade' && (
+            <>
+              <div className="panels-grid">
+                <TradeForm onSubmit={handleTrade} disabled={mode === MODES.LOCKDOWN} />
+                <PortfolioPanel portfolio={portfolio} />
+              </div>
+              <RiskSignals mode={mode} confidence={confidence} secondsInactive={secondsInactive} lastTrade={lastTrade} will={will} />
+            </>
+          )}
+
+          {activeNav === 'ledger' && (
+            <DecisionLedger entries={ledger} filter={ledgerFilter} setFilter={setLedgerFilter} onExport={exportLedger} />
+          )}
+
+          {activeNav === 'will' && (
+            <>
+              <FinancialWill will={will} onEdit={() => setShowEditWill(true)} />
+              <EmergencyContacts contacts={user.emergencyContacts} onTestAlert={(c, i) => sendEmail(c, i, 'WillGuard Test Alert', `This is a test alert from WillGuard for ${user.fullName}.`)} lastNotified={lastNotified} />
+            </>
+          )}
+
+          {activeNav === 'demo' && (
+            <div className="panel">
+              <div className="panel-header"><span className="panel-title">Demo Instructions</span></div>
+              <div style={{ lineHeight: '1.6', color: 'var(--text-secondary)' }}>
+                <p>Welcome to the WillGuard interactive demo!</p>
+                <div style={{ marginTop: '12px' }}>
+                  <p>1. <strong>Co-Pilot Mode:</strong> Try submitting standard trades in the Trade Evaluator tab.</p>
+                  <p>2. <strong>Guardian Mode:</strong> Stop interacting with the page. After {thresholds.guardian} seconds, Guardian mode activates and stops new trades.</p>
+                  <p>3. <strong>Lockdown Mode:</strong> After {thresholds.lockdown} seconds of inactivity, Lockdown mode triggers, freezing all activity and sending emergency emails.</p>
+                  <p>4. <strong>Automated Demo:</strong> Click the <strong>▶ Demo</strong> button in the top bar to watch the system handle a pre-scripted sequence automatically.</p>
+                </div>
+              </div>
             </div>
-            <div className="stat-card green">
-              <div className="stat-card-header">
-                <span className="stat-card-title">Today's P&L</span>
-                <span className="stat-card-icon">📈</span>
-              </div>
-              <div className="stat-card-value" style={{ color: 'var(--accent-green)' }}>+${Math.abs(portfolio.totalValue - 100000).toFixed(2)}</div>
-              <div className="stat-card-sub">{((portfolio.totalValue - 100000) / 1000).toFixed(2)}%</div>
-            </div>
-            <div className={`stat-card ${risk.total < 0.4 ? '' : risk.total < 0.7 ? 'amber' : 'red'}`}>
-              <div className="stat-card-header">
-                <span className="stat-card-title">Risk Score</span>
-                <span className="stat-card-icon">🎯</span>
-              </div>
-              <div className="stat-card-value text-mono" style={{ color: risk.total < 0.4 ? 'var(--accent-green)' : risk.total < 0.7 ? 'var(--accent-amber)' : 'var(--accent-red)' }}>
-                {(risk.total * 100).toFixed(0)}<span style={{ fontSize: '0.9rem' }}>/100</span>
-              </div>
-              <div className="stat-card-sub">GUARD LEVEL: {risk.total < 0.4 ? 'OPTIMAL' : risk.total < 0.7 ? 'ELEVATED' : 'CRITICAL'}</div>
-            </div>
-          </div>
-
-          {/* Main Panels */}
-          <div className="panels-grid">
-            <SystemModePanel mode={mode} secondsInactive={secondsInactive} confidence={confidence} demoRunning={demoRunning} />
-            <RiskScorePanel risk={risk} />
-          </div>
-
-          <div className="panels-grid">
-            <TradeForm onSubmit={handleTrade} disabled={mode === MODES.LOCKDOWN} />
-            <PortfolioPanel portfolio={portfolio} />
-          </div>
-
-          {/* Decision Ledger */}
-          <DecisionLedger entries={ledger} filter={ledgerFilter} setFilter={setLedgerFilter} onExport={exportLedger} />
-
-          {/* Risk Signals */}
-          <RiskSignals mode={mode} confidence={confidence} secondsInactive={secondsInactive} lastTrade={lastTrade} will={will} />
-
-          {/* Collapsibles */}
-          <EmergencyContacts contacts={user.emergencyContacts} onTestAlert={(c, i) => sendEmail(c, i, 'WillGuard Test Alert', `This is a test alert from WillGuard for ${user.fullName}.`)} lastNotified={lastNotified} />
-          <FinancialWill will={will} onEdit={() => setShowEditWill(true)} />
+          )}
         </div>
       </main>
 
