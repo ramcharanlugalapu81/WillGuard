@@ -1,0 +1,104 @@
+# WillGuard Financial Will
+# This is the user's structured intent model.
+# ArmorClaw enforces these rules even when
+# the user cannot communicate.
+
+owner:
+  name: "Demo User"
+  account_id: "demo-001"
+
+# Family Goals
+goals:
+  - id: goal_education
+    type: education
+    description: "Preserve capital for children's education fund"
+    priority: critical
+    protected_amount: 200000
+
+  - id: goal_retirement
+    type: retirement
+    description: "Long-term retirement corpus"
+    priority: high
+    protected_amount: 100000
+
+  - id: goal_emergency
+    type: emergency_fund
+    description: "6 months of living expenses"
+    priority: critical
+    protected_amount: 50000
+
+# Risk Floor
+risk_floor:
+  minimum_balance: 50000
+  max_single_trade_amount: 10000
+  max_daily_trades: 20
+  max_daily_volume: 50000
+  allowed_asset_classes:
+    - equity
+    - etf
+  banned_asset_classes:
+    - options
+    - crypto
+    - futures
+
+# Trusted Contacts
+trusted_contacts:
+  - name: "Hema Sree (Trustee)"
+    phone: "+919876543210"
+    email: "trustee@example.com"
+    role: primary_trustee
+    access_level: read_only
+
+  - name: "Family Member 2"
+    phone: "+919876543211"
+    email: "family2@example.com"
+    role: secondary_contact
+    access_level: notification_only
+
+# Inactivity Thresholds
+inactivity:
+  guardian_mode_seconds: 14400
+  lockdown_mode_seconds: 86400
+  grace_check_enabled: true
+  grace_check_channels:
+    - heartbeat_ping
+    - email_confirmation
+
+# Trade Rules (Three-Zone Enforcement)
+trade_rules:
+  - zone: EXECUTE
+    conditions:
+      max_amount: 5000
+      risk_score_below: 0.3
+      allowed_in_modes:
+        - copilot
+
+  - zone: NOTIFY
+    conditions:
+      max_amount: 15000
+      risk_score_range: [0.3, 0.7]
+      allowed_in_modes:
+        - copilot
+
+  - zone: FREEZE
+    conditions:
+      risk_score_above: 0.7
+      applies_in_modes:
+        - copilot
+        - guardian
+        - lockdown
+    action: block_and_log
+
+# Mode-Specific Overrides
+mode_overrides:
+  guardian:
+    block_all_new_trades: true
+    hold_existing_positions: true
+    alert_trusted_contacts: true
+    alert_message: "WillGuard Alert: User has been inactive for {duration}. All trades are frozen. Existing positions are held."
+
+  lockdown:
+    full_trade_freeze: true
+    elevate_trustee_access: true
+    trustee_can_liquidate: false
+    alert_message: "WillGuard LOCKDOWN: User has been unresponsive for {duration}. Full trade freeze is active. Trustee access elevated."

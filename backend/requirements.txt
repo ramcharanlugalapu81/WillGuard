@@ -1,0 +1,19 @@
+# WillGuard - AI-Driven Financial Safety System
+# Core
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+pydantic==2.9.0
+pydantic-settings==2.5.0
+python-dotenv==1.0.1
+pyyaml==6.0.2
+
+# Alpaca Paper Trading
+alpaca-py==0.28.1
+
+# LLM (OpenAI-compatible SDK - works with OpenAI, Gemini, etc.)
+openai==1.50.0
+
+# Utilities
+websockets==12.0
+python-dateutil==2.9.0
+aiofiles==24.1.0

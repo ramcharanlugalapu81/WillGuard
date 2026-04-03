@@ -1,0 +1,19 @@
+# Node
+node_modules/
+.npm
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# MacOS
+.DS_Store
+
+# Frontend build
+dist/
+build/
