@@ -43,3 +43,25 @@ npm install
 npm run dev
 ```
 *Runs on http://localhost:5173*
+
+## System Walkthrough & UI Modes
+
+WillGuard relies on a dynamic state engine that automatically adapts the UI and backend logic based on your activity.
+
+### 1. Co-Pilot Mode (Active)
+- **Status:** The default mode when continuous user interaction (mouse tracking, keyboard inputs) is detected.
+- **Rules:** The ArmorClaw engine evaluates trades actively through Gemini risk scoring. High-risk trades will prompt a **Confirm/Reject Notification**, while clean trades are executed directly.
+
+### 2. Guardian Mode (Warning)
+- **Trigger:** Activates after moderate inactivity (e.g., leaving your desk for a few seconds).
+- **UI Changes:** A yellow warning banner appears at the top. The mode badge shifts to the pulsing amber Guardian shield.
+- **Rules:** All new trade evaluations are instantly **frozen**. Market signals stay active, but interaction relies entirely on pre-approved constraints. Any user activity instantly restores Co-Pilot Mode.
+
+### 3. Lockdown Mode (Critical)
+- **Trigger:** Activates after extended, dangerous levels of inactivity.
+- **UI Changes:** A high-contrast red lockdown border and banner take over the screen. The entire Dashboard becomes completely disabled and overlaid with a lockdown shield.
+- **Rules:** Emergency contacts configured in the "Financial Will" tab receive an **instant EmailJS real-time alert** notifying them of the unattended trading session. Trades are absolutely blocked.
+
+### 4. Configuration & Settings
+- **Financial Will Tab:** Update your approved tickers, risk tolerance, and daily limits on the fly.
+- **Settings (Gear Icon):** Ensures your EmailJS Service ID, Template ID, and Public Key are securely saved in LocalStorage so that real emails can be dispatched seamlessly upon Lockdown.
