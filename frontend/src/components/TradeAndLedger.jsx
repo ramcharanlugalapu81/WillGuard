@@ -48,7 +48,7 @@ export function TradeForm({ onSubmit, disabled }) {
           </div>
         </div>
         <button className="btn-submit-trade" type="submit" disabled={disabled}>
-          ⚡ Evaluate & Submit
+          Evaluate & Submit
         </button>
       </form>
     </div>
@@ -67,7 +67,7 @@ export function DecisionLedger({ entries, filter, setFilter, onExport }) {
         {['ALL', 'EXECUTE', 'NOTIFY', 'FREEZE'].map(f => (
           <button key={f} className={`ledger-filter ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>{f}</button>
         ))}
-        <button className="ledger-export" onClick={onExport}>📥 Export JSON</button>
+        <button className="ledger-export" onClick={onExport}>Export JSON</button>
       </div>
       {filtered.length === 0 ? (
         <div className="empty-state">No entries yet. Submit a trade or trigger a mode change.</div>

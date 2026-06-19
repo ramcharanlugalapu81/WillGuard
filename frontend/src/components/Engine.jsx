@@ -4,9 +4,9 @@
 export const MODES = { COPILOT: 'copilot', GUARDIAN: 'guardian', LOCKDOWN: 'lockdown' };
 
 // Demo-mode thresholds (short for presentations)
-export const DEMO_THRESHOLDS = { guardian: 8, lockdown: 20 };
-// Real-mode thresholds
-export const REAL_THRESHOLDS = { guardian: 14400, lockdown: 86400 };
+export const DEMO_THRESHOLDS = { guardian: 30, lockdown: 60 };
+// Real-mode thresholds (Set ultra-fast for hackathon demo)
+export const REAL_THRESHOLDS = { guardian: 10, lockdown: 15 };
 
 export function getModeColor(mode) {
   switch (mode) {
@@ -20,7 +20,7 @@ export function getModeColor(mode) {
 export function getModeIcon(mode) {
   switch (mode) {
     case MODES.COPILOT: return '✅';
-    case MODES.GUARDIAN: return '🛡';
+    case MODES.GUARDIAN: return '🛡️';
     case MODES.LOCKDOWN: return '🔒';
     default: return '⚡';
   }

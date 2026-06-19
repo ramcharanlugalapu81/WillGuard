@@ -13,7 +13,14 @@ alpaca-py==0.28.1
 # LLM (OpenAI-compatible SDK - works with OpenAI, Gemini, etc.)
 openai==1.50.0
 
+# Database
+aiosqlite==0.20.0
+
+# Notifications
+twilio==9.3.0
+
 # Utilities
 websockets==12.0
 python-dateutil==2.9.0
 aiofiles==24.1.0
+python-multipart==0.0.9

@@ -10,7 +10,7 @@ export function SystemModePanel({ mode, secondsInactive, confidence, demoRunning
       <div className="panel-header">
         <span className="panel-title">System Mode</span>
         <span className={`panel-badge ${demoRunning ? 'demo' : 'live'}`}>
-          {demoRunning ? '● DEMO' : '● LIVE'}
+          {demoRunning ? 'DEMO' : 'LIVE'}
         </span>
       </div>
       <div className="mode-display">
@@ -34,10 +34,11 @@ export function SystemModePanel({ mode, secondsInactive, confidence, demoRunning
   );
 }
 
-export function RiskScorePanel({ risk }) {
+export function RiskScorePanel({ risk, method }) {
   const score = risk?.total ?? 0;
   const label = score < 0.4 ? 'LOW RISK' : score < 0.7 ? 'MODERATE RISK' : 'HIGH RISK';
   const labelClass = score < 0.4 ? 'low' : score < 0.7 ? 'moderate' : 'high';
+  const methodLabel = method === 'gemini' ? 'AI-Scored' : method === 'heuristic' ? '📐 Heuristic' : 'Simulated';
   const gaugeColor = score < 0.4 ? 'var(--accent-green)' : score < 0.7 ? 'var(--accent-amber)' : 'var(--accent-red)';
 
   // SVG semicircle gauge
@@ -64,7 +65,10 @@ export function RiskScorePanel({ risk }) {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">Risk Score</span>
-        <span className={`risk-gauge-label ${labelClass}`}>{label}</span>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <span className={`risk-gauge-label ${labelClass}`}>{label}</span>
+          <span className="panel-badge simulated" style={{ fontSize: '0.65rem' }}>{methodLabel}</span>
+        </div>
       </div>
       <div className="risk-gauge-container">
         <svg className="risk-gauge-svg" viewBox="0 0 180 100">

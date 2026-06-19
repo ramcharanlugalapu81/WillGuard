@@ -1,70 +1,213 @@
-# WillGuard
+# 🛡 WillGuard — AI-Powered Financial Safety System
 
-WillGuard is a production-grade AI financial safety system. It acts as an intelligent trading guardian, protecting your family assets during periods of user inactivity by automatically enforcing a pre-defined "Financial Will."
+> **Protect your assets. Automate your safety. Trade with peace of mind.**
 
-## Features
+WillGuard is an intelligent financial safety platform that monitors trading activity, detects user inactivity, and automatically enforces protective measures through its proprietary **ArmorClaw Protocol**. When a trader becomes unresponsive, WillGuard progressively locks down their account and alerts emergency contacts with a secure **Magic Link** to restore access.
 
-- **ArmorClaw Enforcement Engine**: A YAML-driven safety policy that dictates risk tolerance, daily limits, and approved tickers.
-- **OpenClaw Agentic Loop**: AI-driven risk scoring and tone classification powered by Gemini natively (OpenAI-compatible SDK).
-- **System State Engine**: Tracks user activity and transitions the system between three states:
-  - **Co-Pilot**: Active monitoring of trades.
-  - **Guardian**: Automated pause on new trades after moderate inactivity.
-  - **Lockdown**: Full trade freeze and emergency contact notification after extended inactivity.
-- **Decision Ledger**: Append-only audit log of all system decisions for maximum transparency.
-- **Real-Time Notification System**: EmailJS integration for notifying emergency contacts during Lockdown mode.
-- **Hackathon-Ready React Dashboard**: A polished frontend (Vite/React) for visualizing real-time enforcement, risk scores, and system mode transitions.
+---
 
-## Project Structure
+## 📸 Screenshots
 
-- `/backend`: Python/FastAPI server containing the Intelligence layer (Risk Scorer, Tone Classifier) and ArmorClaw engine.
-- `/frontend`: React/Vite web dashboard for interacting with the system.
+### 🔐 Login & Registration
+![Login Page](screenshots/login_page.png)
+*Split-screen login with animated WillGuard branding, password visibility toggle, and live backend status indicator.*
 
-## Setup Instructions
+### 📊 Dashboard — System Mode & Risk Monitoring
+![Dashboard](screenshots/dashboard.png)
+*Real-time dashboard showing portfolio value, risk scoring (AI-powered), inactivity monitoring, and system mode transitions.*
 
-### Environment Variables
-You must have a `GEMINI_API_KEY` configured in `backend/.env`.
+### 🤖 ClawBot Terminal
+![ClawBot](screenshots/clawbot.png)
+*Hacker-style one-line trade terminal. Type `buy 10 AAPL` or `sell 5 TSLA` — all trades enforced by ArmorClaw.*
 
-### Running Locally
+---
 
-1. **Backend** (FastAPI)
+## 🚀 Features
+
+### 🛡 ArmorClaw Protocol
+- **3-Zone Enforcement**: EXECUTE (safe) → NOTIFY (risky) → FREEZE (blocked)
+- **AI Risk Scoring** via Google Gemini with heuristic fallback
+- **Tone Analysis** on trade messages to detect panic/urgency
+- **Per-order limits**, daily volume caps, approved ticker whitelists
+
+### ⏱ Inactivity Detection & Mode Transitions
+| Mode | Trigger | Behavior |
+|------|---------|----------|
+| **Co-Pilot** | Active user | All trades evaluated normally |
+| **Guardian** | 10s inactivity* | New trades paused, email alert sent |
+| **Lockdown** | 15s inactivity* | All trading frozen, Magic Link sent |
+
+*\*Timers are user-configurable during registration and via the Financial Will settings.*
+
+### 📧 EmailJS Notifications
+- Real email alerts sent to emergency contacts on mode changes
+- **Magic Link** embedded in every alert — one click to restore the system
+- Test alert functionality from the dashboard
+
+### 🤖 ClawBot Terminal
+- One-line trade commands: `buy 10 AAPL`, `sell 5 TSLA`
+- Live stock quotes: `quote MSFT`
+- System status, portfolio view, and reset — all from the terminal
+- Every command runs through ArmorClaw enforcement
+
+### 📜 Financial Will
+- Set risk tolerance, daily trade limits, per-order limits
+- Define approved tickers
+- Configure inactivity timer thresholds
+- Editable anytime from the dashboard
+
+---
+
+## 🏗 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React + Vite |
+| **Backend** | Python FastAPI |
+| **Database** | SQLite (persistent) |
+| **AI Risk Scoring** | Google Gemini API |
+| **Notifications** | EmailJS (with Private Key auth) |
+| **Trade Execution** | Alpaca Markets API |
+| **Real-time** | WebSocket |
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+- **Node.js** (v18+)
+- **Python** (3.10+)
+- **pip** (Python package manager)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR_USERNAME/WillGuard.git
+cd WillGuard
+```
+
+### 2. Backend Setup
 ```bash
 cd backend
-python -m venv venv
-venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+Create a `.env` file in the `backend/` directory:
+```env
+# EmailJS Configuration (Required for email alerts)
+EMAILJS_SERVICE_ID=your_service_id
+EMAILJS_TEMPLATE_ID=your_template_id
+EMAILJS_PUBLIC_KEY=your_public_key
+EMAILJS_PRIVATE_KEY=your_private_key
+
+# Alpaca API (Optional — simulated if not provided)
+ALPACA_API_KEY=your_alpaca_key
+ALPACA_SECRET_KEY=your_alpaca_secret
+
+# Google Gemini (Optional — falls back to heuristic scoring)
+GEMINI_API_KEY=your_gemini_key
+```
+
+Start the backend server:
+```bash
 python api.py
 ```
-*Runs on http://localhost:8000*
+Backend runs at: **http://localhost:8000**
 
-2. **Frontend** (React)
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*Runs on http://localhost:5173*
+Frontend runs at: **http://localhost:5173**
 
-## System Walkthrough & UI Modes
+### 4. Open in Browser
+Navigate to **http://localhost:5173** and register your account!
 
-WillGuard relies on a dynamic state engine that automatically adapts the UI and backend logic based on your activity.
+---
 
-### 1. Co-Pilot Mode (Active)
-![Co-Pilot Mode](assets/copilot.png)
-- **Status:** The default mode when continuous user interaction (mouse tracking, keyboard inputs) is detected.
-- **Rules:** The ArmorClaw engine evaluates trades actively through Gemini risk scoring. High-risk trades will prompt a **Confirm/Reject Notification**, while clean trades are executed directly.
+## 🎮 How to Demo
 
-### 2. Guardian Mode (Warning)
-![Guardian Mode](assets/guardian.png)
-- **Trigger:** Activates after moderate inactivity (e.g., leaving your desk for a few seconds).
-- **UI Changes:** A yellow warning banner appears at the top. The mode badge shifts to the pulsing amber Guardian shield.
-- **Rules:** All new trade evaluations are instantly **frozen**. Market signals stay active, but interaction relies entirely on pre-approved constraints. Any user activity instantly restores Co-Pilot Mode.
+1. **Register** — Create an account with your email and emergency contacts
+2. **Trade** — Use the Trade Evaluator or ClawBot terminal (`buy 10 AAPL`)
+3. **Wait 10 seconds** — Guardian Mode activates, email sent to contacts
+4. **Wait 15 seconds** — Lockdown Mode triggers, Magic Link emailed
+5. **Click Magic Link** — System instantly restores to Co-Pilot mode
+6. **Run Demo** — Click the ▶ Demo button for an automated walkthrough
 
-### 3. Lockdown Mode (Critical)
-![Lockdown Mode](assets/lockdown.png)
-- **Trigger:** Activates after extended, dangerous levels of inactivity.
-- **UI Changes:** A high-contrast red lockdown border and banner take over the screen. The entire Dashboard becomes completely disabled and overlaid with a lockdown shield.
-- **Rules:** Emergency contacts configured in the "Financial Will" tab receive an **instant EmailJS real-time alert** notifying them of the unattended trading session. Trades are absolutely blocked.
+---
 
-### 4. Configuration & Settings
-- **Financial Will Tab:** Update your approved tickers, risk tolerance, and daily limits on the fly.
-- **Settings (Gear Icon):** Ensures your EmailJS Service ID, Template ID, and Public Key are securely saved in LocalStorage so that real emails can be dispatched seamlessly upon Lockdown.
+## 📁 Project Structure
+
+```
+WillGuard/
+├── backend/
+│   ├── api.py                    # FastAPI server & endpoints
+│   ├── requirements.txt          # Python dependencies
+│   ├── .env                      # Environment variables
+│   ├── data/                     # SQLite database
+│   └── src/
+│       ├── armorclaw/            # ArmorClaw enforcement engine
+│       │   ├── enforcer.py       # 3-zone trade enforcement
+│       │   └── policy_loader.py  # Financial will policies
+│       ├── intelligence/         # AI layer
+│       │   ├── risk_scorer.py    # Gemini + heuristic risk scoring
+│       │   ├── inactivity_detector.py
+│       │   └── tone_classifier.py
+│       ├── openclaw/             # Autonomous agent
+│       │   ├── agent.py          # Main orchestrator
+│       │   ├── heartbeat.py      # Activity monitoring
+│       │   └── memory.py         # Markdown-based persistence
+│       └── notifications/
+│           └── notifier.py       # EmailJS integration
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx               # Main dashboard
+│   │   ├── api.js                # API client
+│   │   ├── index.css             # Design system
+│   │   └── components/
+│   │       ├── Auth.jsx          # Login/Register
+│   │       ├── ClawBot.jsx       # Trade terminal
+│   │       ├── Engine.jsx        # Mode & threshold logic
+│   │       ├── Panels.jsx        # Dashboard panels
+│   │       ├── Sections.jsx      # Risk signals, contacts, will
+│   │       ├── Toasts.jsx        # Notification toasts
+│   │       └── TradeAndLedger.jsx
+│   └── package.json
+├── screenshots/                  # App screenshots
+└── README.md
+```
+
+---
+
+## 🔐 Security Architecture
+
+```
+┌──────────────────────────────────────────┐
+│           OpenClaw Agent                 │
+│  ┌────────────────────────────────────┐  │
+│  │  Perceive: Heartbeat + Signals     │  │
+│  │  Reason:   Risk Score + Tone       │  │
+│  │  Act:      Execute or Block        │  │
+│  │  Enforce:  ArmorClaw (always)      │  │
+│  └────────────────────────────────────┘  │
+└──────────────────────────────────────────┘
+        │                    │
+   Co-Pilot Mode        Guardian Mode
+   (Normal Trading)     (Trades Paused)
+                             │
+                        Lockdown Mode
+                      (All Frozen + Alerts)
+```
+
+---
+
+## 👥 Team
+
+Built for hackathon demonstration.
+
+---
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) for details.

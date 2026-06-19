@@ -31,12 +31,12 @@ export function useToasts() {
 export function getGlobalAddToast() { return globalAddToast; }
 
 export default function ToastContainer({ toasts, removeToast }) {
-  const icons = { execute: '✅', freeze: '🛑', notify: '⚠️', info: 'ℹ️' };
+  const icons = { execute: '', freeze: '', notify: '', info: '' };
   return (
     <div className="toast-container">
       {toasts.map(t => (
         <div key={t.id} className={`toast ${t.type}`}>
-          <span className="toast-icon">{icons[t.type] || 'ℹ️'}</span>
+          <span className="toast-icon">{icons[t.type] || ''}</span>
           <div className="toast-content">
             <div className="toast-title">{t.title}</div>
             <div className="toast-msg">{t.msg}</div>

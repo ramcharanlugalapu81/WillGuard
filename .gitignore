@@ -17,3 +17,16 @@ env/
 # Frontend build
 dist/
 build/
+
+# Database
+*.db
+*.db-journal
+*.db-wal
+
+# Test results and temporary logs
+*test_results.txt
+db_out.txt
+*.log
+*.mp4
+
+
